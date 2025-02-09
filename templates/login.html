@@ -31,20 +31,32 @@ Login
     </div>
 </nav>
 
-<br>
-<h1>Login</h1>
-<br>
-<form action="/login" method="post">
-    <div class="mb-3">
-        <input autocomplete="off" autofocus class="form-control mx-auto" style="width:20vw" name="username" placeholder="Username" type="text">
+<!-- Login Form -->
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="text-center text-primary mb-4">Welcome to FeedForward</h2>
+                    <p class="text-center text-muted mb-4">Sign in to continue</p>
+                    <form action="/login" method="post">
+                        <div class="mb-3">
+                            <input autocomplete="off" autofocus class="form-control" name="username" placeholder="Username" type="text" required>
+                        </div>
+                        <div class="mb-3">
+                            <input class="form-control" name="password" placeholder="Password" type="password" required>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Log In</button>
+                    </form>
+                    <div class="text-center mt-3">
+                        <a href="/forgot-password" class="text-decoration-none text-success">Forgot Password?</a>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-3">
+                <p>Don't have an account? <a href="/register" class="text-decoration-none text-success">Create Account</a></p>
+            </div>
+        </div>
     </div>
-    <div class="mb-3">
-        <input class="form-control mx-auto" style="width:20vw" name="password" placeholder="Password" type="password">
-    </div>
-    <button type="submit">Log In</button>
-</form>
-<br>
-<form action="/register" method="get">
-    Don't Have an Account? <a class="btn btn-link" href="/register">Create Account</a>
-</form>
+</div>
 {% endblock %}

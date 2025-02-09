@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    signup
+{% endblock %}
+
+{% block main %}
+<!-- Hero Section -->
+<header class="hero-section bg-primary text-white text-center py-5">
+    <div class="container">
+        <h1 class="display-4 fw-bold">Join Feed Forward Maryland</h1>
+        <p class="lead">Be a part of the movement to reduce food waste and fight hunger.</p>
+    </div>
+</header>
+
+<!-- Signup Form Section -->
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+            <div class="card shadow-lg border-0 rounded-3">
+                <div class="card-body p-4">
+                    <h2 class="text-center text-success fw-bold mb-4">Create Your Account</h2>
+                    <form action="/register" method="post">
+                        <!-- Username -->
+                        <div class="mb-3">
+                            <label for="username" class="form-label fw-semibold">Username</label>
+                            <input type="text" class="form-control rounded-pill" id="username" name="username" placeholder="Enter your username" required>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="mb-3">
+                            <label for="password" class="form-label fw-semibold">Password</label>
+                            <input type="password" class="form-control rounded-pill" id="password" name="password" placeholder="Enter your password" required>
+                        </div>
+
+                        <!-- Confirm Password -->
+                        <div class="mb-3">
+                            <label for="confirm_password" class="form-label fw-semibold">Confirm Password</label>
+                            <input type="password" class="form-control rounded-pill" id="confirm_password" name="confirm_password" placeholder="Re-enter your password" required>
+                        </div>
+
+                        <!-- Account Type Selection -->
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Account Type</label>
+                            <select class="form-select rounded-pill" name="account_type" required>
+                                <option value="" disabled selected>Select account type</option>
+                                <option value="donor">Donor</option>
+                                <option value="foodbank">Foodbank</option>
+                            </select>
+                        </div>
+
+                        <!-- Sign Up Button -->
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success btn-lg rounded-pill">Sign Up</button>
+                        </div>
+                    </form>
+
+                    <!-- Redirect to Login -->
+                    <div class="text-center mt-4">
+                        <p class="mb-0">Already have an account? <a href="/login" class="text-decoration-none text-primary fw-bold">Log In</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

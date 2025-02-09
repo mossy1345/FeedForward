@@ -1,67 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>donor</title>
+    <title>Feed Forward</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
         body {
             margin: 0;
-            font-family: 'Arial', sans-serif;
-            background-color: #fff;
+            font-family: Arial, sans-serif;
+            background: #fff;
             color: #333;
-            text-align: center;
         }
+
         header {
-            background-color: #E44D26;
+            background-color: rgba(228, 77, 38);
             color: white;
             padding: 15px;
-            font-size: 24px;
-            font-weight: bold;
-            font-family: 'Georgia', serif;
+            font-size: 35px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 15px;
+            position: relative;
+            flex-direction: column;
+            height: 120px;
         }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 20%;
+            background-color: #7c9a4e;
+        }
+
         #logo {
             height: 60px;
+            position: absolute;
+            top: 0px;
+            left: 0px;
         }
+
         #map {
             height: 80vh;
             width: 100%;
         }
-        .leaflet-popup-content-wrapper {
+
+        .leaflet-popup-content-wrapper,
+        .leaflet-popup-tip {
             background-color: #E44D26;
             color: white;
             border-radius: 8px;
         }
-        .leaflet-popup-tip {
-            background-color: #E44D26;
+
+        header span {
+            font-weight: bold;
         }
     </style>
 </head>
+
 <body>
     <header>
         <img id="logo" src="IMG_20240620_203511_146 (2).jpg" alt="Feed Forward Logo">
-        <span>Feed Forward</span>
+        <span>Feed Forward Donor Page</span>
     </header>
+
     <div id="map"></div>
-    
+
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
-        var map = L.map('map').setView([39.2156, 76.9769], 13); // Default view (New York City)
-        
+        var map = L.map('map').setView([39.2037, -76.8610], 13);
+
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap contributors'
         }).addTo(map);
-        
-        // Example marker (you can add more dynamically later)
-        L.marker([39.2156, -76.9769]).addTo(map)
-            .bindPopup('<b>Example Location</b><br>This is an example marker.')
+
+        L.marker([39.2037, -76.8610]).addTo(map)
+            .bindPopup('<b>Example Location</b><br>Columbia, Maryland.')
             .openPopup();
     </script>
 </body>
+
 </html>
 

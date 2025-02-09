@@ -19,9 +19,21 @@ def home():
 def donor():
     return render_template('donor.html')
 
+@app.route("/admin", methods=["GET"])
+def admin():
+    return render_template('admin.html')
+
+@app.route("/recipient", methods=["GET"])
+def donor():
+    return render_template('recipient.html')
+
 @app.route("/test")
 def test():
     return render_template('donor.html')
+
+@app.route("/signup")
+def signup():
+    return render_template('signup.html')
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
