@@ -5,7 +5,7 @@ import requests
 import urllib
 import uuid
 
-from flask import redirect, render_template, request, session
+from flask import Flask, flash, redirect, render_template, request, session, send_from_directory, get_flashed_messages
 from functools import wraps
 
 def login_required(allowed_roles=None):
@@ -14,14 +14,17 @@ def login_required(allowed_roles=None):
         def wrapped_function(*args, **kwargs):
             if "user_id" not in session:
                 flash("You must be logged in to access this page.", "danger")
-                return redirect(url_for("login"))
+                return redirect("/login")
 
             # Check if the user's role matches allowed roles
             user_role = session.get("user_role")
             if allowed_roles and user_role not in allowed_roles:
                 flash("You do not have permission to view this page.", "danger")
-                return redirect(url_for("unauthorized"))
+                return redirect("/unauthorized")
 
             return f(*args, **kwargs)
         return wrapped_function
     return decorator
+
+
+

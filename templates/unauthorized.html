@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block title %}
-Login
+Unauthorized
 {% endblock %}
 
 {% block main %}
@@ -28,37 +28,18 @@ Login
     </div>
 </nav>
 
-<!-- Login Form -->
+<!-- Unauthorized Access Message -->
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card shadow-sm">
                 <div class="card-body">
-                    <h2 class="text-center text-primary mb-4">Welcome to FeedForward</h2>
-                    <p class="text-center text-muted mb-4">Sign in to continue</p>
-                    <form action="/login" method="post">
-                        <div class="mb-3">
-                            <input autocomplete="off" autofocus class="form-control" name="username" placeholder="Username" type="text" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <input class="form-control" name="password" placeholder="Password" type="password" required>
-                        </div>
-
-                        <div class="form-check" style="text-align: left">
-                            <input type="checkbox" class="form-check-input" id="remember_me">
-                            <label class="form-check-label" for="remember_me">Remember Me</label>
-                        </div>
-
-                        <button type="submit" class="btn btn-success w-100">Log In</button>
-                    </form>
+                    <h2 class="text-center text-danger mb-4">Access Denied</h2>
+                    <p class="text-center text-muted mb-4">You are not authorized to view this page. Please log in to continue.</p>
                     <div class="text-center mt-3">
-                        <a href="/forgot-password" class="text-decoration-none text-success">Forgot Password?</a>
+                        <p>Have an account? <a href="/login" class="text-decoration-none text-success">Log In</a></p>
                     </div>
                 </div>
-            </div>
-            <div class="text-center mt-3">
-                <p>Don't have an account? <a href="/signup" class="text-decoration-none text-success">Create Account</a></p>
             </div>
         </div>
     </div>
