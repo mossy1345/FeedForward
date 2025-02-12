@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feed Forward</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            margin: 150;
+            font-family: Arial, sans-serif;
+            background: #fff;
+            color: #333;
+        }
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 10%;
+            background-color: #7c9a4e;
+        }
+        header {
+            background-color: rgba(228, 77, 38);
+            color: white;
+            padding: 0px;
+            font-size: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            flex-direction: column;
+            height: 150px;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 10%;
+            background-color: #496745;
+        }
+
+        #logo {
+            height: 60px;
+            position: absolute;
+            top: 50px;
+            left: 15px;
+            border-radius: 10px;
+        }
+
+        #map {
+            height: 80vh;
+            width: 100%;
+        }
+
+        .leaflet-popup-content-wrapper,
+        .leaflet-popup-tip {
+            background-color: #E44D26;
+            color: white;
+            border-radius: 8px;
+        }
+
+        header span {
+            font-weight: bold;
+        }
+
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+        .popup-overlay.active {
+            display: block;
+        }
+
+        .popup-info {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            width: 400px;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+        }
+        .popup-info.active {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <img id="logo" src="static\images\IMG_20240620_203511_146_2.jpg" alt="Feed Forward Logo">
+        <span>Feed Forward Donor Page!</span>
+    </header>
+
+    <div id="map"></div>
+    <div class="popup-overlay" id="popupOverlay"></div>
+    <div class="popup-info card" id="popupInfo">
+        <div class="card-header text-white" style="background-color: #496745;">
+            <h5 class="mb-0">Recipient Name</h5>
+        </div>
+        <div class="card-body">
+            <p id="popupContent"><strong>Address</strong><br>Columbia, Maryland.</p>
+            <p>Information Information Information Information Information Information Information Information Information Information Information Information Information Information Information Information Information Information Information Information Information Information </p>
+            <button class="btn btn-danger" onclick="closePopup()">Close</button>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        var map = L.map('map').setView([39.2037, -76.8610], 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        var greenIcon = new L.Icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        }); 
+
+        var marker = L.marker([39.2037, -76.8610], { icon: greenIcon }).addTo(map);
+        
+        marker.on('click', function() {
+            document.getElementById('popupOverlay').classList.add('active');
+            document.getElementById('popupInfo').classList.add('active');
+        });
+        
+        function closePopup() {
+            document.getElementById('popupOverlay').classList.remove('active');
+            document.getElementById('popupInfo').classList.remove('active');
+        }
+    </script>
+</body>
+
+</html>

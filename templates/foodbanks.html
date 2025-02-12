@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donation Deliveries Tracker</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEJ2pqkR4T2tD5nG0uF9XzZ9rf+X8zk5J5TkYbZY82zSZXk9a1Yh8yDz79Ym0" crossorigin="anonymous">
+    <style>
+        body {
+            background-color: #FFFFFF;
+            background-image: url(https://img.freepik.com/free-photo/bell-pepper-tomato-onion-salad-cauliflower-wooden-basket-wood-table_1150-21060.jpg?t=st=1739324009~exp=1739327609~hmac=c4a2601b97e8b2b1c854d9d623b3cf622ec065f12e055bbd03220addda7ba037&w=1380);
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+        }
+
+        header {
+            background-color: #E55733;
+            color: white;
+            padding: 20px;
+            font-size: 40px;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .container {
+            max-width: 2000px;
+            margin: 40px auto;
+            background-color: #506A47;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        table {
+            width: 100%;
+            margin-top: 5px;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #849F4E;
+            color: #102E39;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #5B7A50;
+        }
+
+        tr:nth-child(odd) {
+            background-color: #6A8C56;
+        }
+
+        tr:hover {
+            background-color: #849F4E;
+            color: #102E39;
+        }
+
+        td:focus {
+            outline: none;
+            background-color: #849F4E;
+            color: #102E39;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>Donation Deliveries Tracker</header>
+
+    <div class="container">
+        <table class="table table-hover table-bordered">
+            <thead>
+                <tr>
+                    <th>Donor</th>
+                    <th>ETA</th>
+                    <th>Donation Information</th>
+                    <th>Address</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td contenteditable="true">John Doe</td>
+                    <td contenteditable="true">Feb 12, 2025 - 3:00 PM</td>
+                    <td contenteditable="true">50 lbs of fresh vegetables</td>
+                    <td contenteditable="true">123 Green St, Columbia, MD</td>
+                </tr>
+                <tr>
+                    <td contenteditable="true">Healthy Foods Inc.</td>
+                    <td contenteditable="true">Feb 13, 2025 - 10:00 AM</td>
+                    <td contenteditable="true">100 canned goods</td>
+                    <td contenteditable="true">45 Market Ave, Baltimore, MD</td>
+                </tr>
+                <tr>
+                    <td contenteditable="true">Sarah Johnson</td>
+                    <td contenteditable="true">Feb 14, 2025 - 1:30 PM</td>
+                    <td contenteditable="true">Assorted dairy products</td>
+                    <td contenteditable="true">789 Farm Rd, Annapolis, MD</td>
+                </tr>
+                <tr>
+                    <td contenteditable="true">John Doe</td>
+                    <td contenteditable="true">Feb 12, 2025 - 3:00 PM</td>
+                    <td contenteditable="true">50 lbs of fresh vegetables</td>
+                    <td contenteditable="true">123 Green St, Columbia, MD</td>
+                </tr>
+                <tr>
+                    <td contenteditable="true">Healthy Foods Inc.</td>
+                    <td contenteditable="true">Feb 13, 2025 - 10:00 AM</td>
+                    <td contenteditable="true">100 canned goods</td>
+                    <td contenteditable="true">45 Market Ave, Baltimore, MD</td>
+                </tr>
+                <tr>
+                    <td contenteditable="true">Sarah Johnson</td>
+                    <td contenteditable="true">Feb 14, 2025 - 1:30 PM</td>
+                    <td contenteditable="true">Assorted dairy products</td>
+                    <td contenteditable="true">789 Farm Rd, Annapolis, MD</td>
+                </tr>
+                <tr>
+                    <td contenteditable="true">Healthy Foods Inc.</td>
+                    <td contenteditable="true">Feb 13, 2025 - 10:00 AM</td>
+                    <td contenteditable="true">100 canned goods</td>
+                    <td contenteditable="true">45 Market Ave, Baltimore, MD</td>
+                </tr>
+                <tr>
+                    <td contenteditable="true">Sarah Johnson</td>
+                    <td contenteditable="true">Feb 14, 2025 - 1:30 PM</td>
+                    <td contenteditable="true">Assorted dairy products</td>
+                    <td contenteditable="true">789 Farm Rd, Annapolis, MD</td>
+                </tr>
+                <tr>
+                    <td contenteditable="true">Healthy Foods Inc.</td>
+                    <td contenteditable="true">Feb 13, 2025 - 10:00 AM</td>
+                    <td contenteditable="true">100 canned goods</td>
+                    <td contenteditable="true">45 Market Ave, Baltimore, MD</td>
+                </tr>
+                <tr>
+                    <td contenteditable="true">Sarah Johnson</td>
+                    <td contenteditable="true">Feb 14, 2025 - 1:30 PM</td>
+                    <td contenteditable="true">Assorted dairy products</td>
+                    <td contenteditable="true">789 Farm Rd, Annapolis, MD</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz4fnFO9gybGxZzL9kzCwQF6gD5Z6hVgBh7tP0VWs38X+bfZoh5fH99A1D" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js" integrity="sha384-pzjw8f+ua7Kw1TIq0ht1h1eD9Y1V8oRAdu6D7Onc2gFZ0WzY5rmjRAjZG+HFlm8e" crossorigin="anonymous"></script>
+</body>
+
+</html>
