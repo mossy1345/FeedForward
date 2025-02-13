@@ -1,66 +1,178 @@
-{% extends "layout.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        /* General styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url(https://img.freepik.com/free-photo/top-view-mockup-diet-food-with-fresh-vegetables-background_23-2148062351.jpg?t=st=1739410787~exp=1739414387~hmac=36b5574a5750716107b9d259d4a05f70b7aeade2b213740be26ea5ac561a5cba&w=1380);
+            margin: 0;
+            padding: 0;
+        }
 
-{% block title %}
-Login
-{% endblock %}
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 50px;
+        }
 
-{% block main %}
-<!-- Navigation Bar -->
-<nav class="navbar navbar-expand-md navbar-light bg-light shadow-sm w-100">
-    <div class="container-fluid">
-        <a>🥬</a>
-        <a class="navbar-brand" href="/"><span class="text-primary">FeedForward</span><span class="text-warning">Maryland</span></a>
-        <button aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-bs-target="#navbar" data-bs-toggle="collapse" type="button">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbar">
-            {% if session["user_id"] %}
-                <ul class="navbar-nav ms-auto mt-2">
-                    <li class="nav-item"><a class="nav-link" href="/logout">Log Out</a></li>
-                </ul>
-            {% else %}
-                <ul class="navbar-nav ms-auto mt-2">
-                    <li class="nav-item"><a class="nav-link" href="/signup">Register</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/login">Log In</a></li>
-                </ul>
-            {% endif %}
-        </div>
-    </div>
+        /* Navbar styles */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #E75931;
+            padding: 15px 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #17a2b8;
+            text-decoration: none;
+        }
+
+        .navbar-brand span {
+            color: #FFFFFF;
+        }
+
+        .navbar-nav {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-item {
+            margin-left: 20px;
+        }
+
+        .nav-link {
+            color: #FFF;
+            text-decoration: none;
+            font-weight: 600;
+            background-color: rgba(14, 50, 66, 0.3);
+            padding: 7.5px;
+            border-radius: 10px;
+        }
+
+        .nav-link:hover {
+            color: #4B6643;
+        }
+
+        /* Login form styles */
+        .login-card {
+            background-color: #4B6643;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            padding: 30px;
+            margin-top: 55px;
+            color: #FFF;
+            font-size: 25px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .login-card h2 {
+            text-align: center;
+            color: #4B6643;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #FFF;
+            font-size: 20px;
+        }
+
+        .form-control {
+            width: 95%;
+            padding: 15px 20px;
+            border-radius: 25px;
+            border: 2px solid #ccc;
+            margin-top: 15px;
+            margin-bottom: 40px;
+            font-size: 1rem;
+        }
+
+        .form-control:focus {
+            border-color: #28a745;
+            outline: none;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border-radius: 25px;
+            background-color: #839B4D;
+            border: none;
+            color: #fff;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #218838;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-link {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .text-link:hover {
+            color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Hero Section (Navbar) -->
+<nav>
+    <a href="/" class="navbar-brand"><span>Feed Forward</span><span> Maryland</span></a>
+    <ul class="navbar-nav ms-auto mt-2">
+        <li class="nav-item"><a class="nav-link" href="/logout">Log Out</a></li>
+        <li class="nav-item"><a class="nav-link" href="/signup">Register</a></li>
+        <li class="nav-item"><a class="nav-link" href="/login">Log In</a></li>
+    </ul>
 </nav>
 
-<!-- Login Form -->
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h2 class="text-center text-primary mb-4">Welcome to FeedForward</h2>
-                    <p class="text-center text-muted mb-4">Sign in to continue</p>
-                    <form action="/login" method="post">
-                        <div class="mb-3">
-                            <input autocomplete="off" autofocus class="form-control" name="username" placeholder="Username" type="text" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <input class="form-control" name="password" placeholder="Password" type="password" required>
-                        </div>
-
-                        <div class="form-check" style="text-align: left">
-                            <input type="checkbox" class="form-check-input" id="remember_me">
-                            <label class="form-check-label" for="remember_me">Remember Me</label>
-                        </div>
-
-                        <button type="submit" class="btn btn-success w-100">Log In</button>
-                    </form>
-                    <div class="text-center mt-3">
-                        <a href="/forgot-password" class="text-decoration-none text-success">Forgot Password?</a>
-                    </div>
-                </div>
+<!-- Login Form Section -->
+<div class="container">
+    <div class="login-card">
+        <h2>Log In</h2>
+        <form action="/login" method="post">
+            <div>
+                <label for="username" class="form-label">Username</label>
+                <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username" required>
             </div>
-            <div class="text-center mt-3">
-                <p>Don't have an account? <a href="/signup" class="text-decoration-none text-success">Create Account</a></p>
+            <div>
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
             </div>
+            <div>
+                <button type="submit" class="btn">Log In</button>
+            </div>
+        </form>
+        <div class="text-center mt-4">
+            <p>Don't have an account? <a href="/signup" class="text-link">Sign Up</a></p>
         </div>
     </div>
 </div>
-{% endblock %}
+
+</body>
+</html>

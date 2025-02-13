@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Donation Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #0F2F3C;
+            background-image: url(https://img.freepik.com/free-photo/top-view-assortment-organic-vegetables_23-2148479118.jpg?t=st=1739405393~exp=1739408993~hmac=72ecc09726d3ad9babb32f9a4fba23ada1b6c61240ed05af1459c6b718d2bc55&w=1380);
+            color: #FFFFFF;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #4E6A44;
+            padding: 20px;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 1000px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+        }
+        input, textarea, select {
+            width: 95%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #849B53;
+            border-radius: 5px;
+        }
+        .radio-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 0px;
+        }
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        button {
+            background-color: #E05832;
+            color: #FFFFFF;
+            border: none;
+            padding: 10px;
+            margin-top: 25px;
+            width: 95%;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 20px;
+        }
+        button:hover {
+            background-color: #c04a2a;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Food Donation Form</h2>
+        <form action="/submit_donation" method="POST">
+            <label for="name">Your Name:</label>
+            <input type="text" id="name" name="donor_name" required>
+
+            <label for="address">Your Address:</label>
+            <input type="text" id="address" name="donor_address" required>
+
+            <label for="recipient">Recipient Name:</label>
+            <input type="text" id="recipient" name="recipient_name" value="{{ recipient_name }}" readonly>
+            <input type="hidden" name="recipient_id" value="{{ recipient_id }}">
+
+
+            <label for="donation_datetime">Donation Date & Time:</label>
+            <input type="datetime-local" id="donation_datetime" name="donation_datetime" required>
+
+            <label>Type of Donation:</label>
+            <div class="radio-group">
+                <label><input type="radio" name="donation_type" value="Perishable" required> Perishable</label>
+                <label><input type="radio" name="donation_type" value="Non-Perishable" required> Non-Perishable</label>
+            </div>
+
+            <label for="description">Donation Description:</label>
+            <textarea id="description" name="donation_description" rows="4" required></textarea>
+
+            <button type="submit"><strong>Submit Donation</strong></button>
+        </form>
+    </div>
+</body>
+</html>

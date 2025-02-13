@@ -1,6 +1,7 @@
 import os
 import sqlite3
-from flask import Flask, flash, redirect, render_template, request, session, send_from_directory, get_flashed_messages
+import requests 
+from flask import Flask, flash, redirect, render_template, request, session, send_from_directory, get_flashed_messages, jsonify
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
@@ -28,11 +29,22 @@ def admin():
 
 @app.route("/recipient", methods=["GET"], endpoint="recipient_page")
 def recipient():
-    return render_template('recipient.html')
-
-@app.route("/foodbanks", methods=["GET"], endpoint="foodbanks_page")
-def foodbanks():
     return render_template('foodbanks.html')
+
+def geocode_address(address):
+    # Send a request to Nominatim API for geocoding
+    url = f'https://nominatim.openstreetmap.org/search?format=json&q={address}'
+    response = requests.get(url)
+    data = response.json()
+
+    # Check if we received valid geocoding data
+    if data:
+        # Extract latitude and longitude
+        latitude = data[0]['lat']
+        longitude = data[0]['lon']
+        return latitude, longitude
+    else:
+        return None, None
 
 @app.route("/signup")
 def signup():
@@ -46,24 +58,32 @@ def register():
     address = request.form.get("address")
     email = request.form.get("email")
     account_type = request.form.get("account_type")
-    
+    bio = request.form.get("bio")
+    phone_number = request.form.get("phone_number")  # Optional field
+
     if not username or not password or not address or not email or not account_type:
-        flash("All fields are required.", "danger")
+        flash("All required fields must be filled.", "danger")
         return redirect("/signup")
-    
+
     if password != confirm_password:
         flash("Passwords do not match.", "danger")
         return redirect("/signup")
-    
+
+    # Geocode the address
+    latitude, longitude = geocode_address(address)
+    if not latitude or not longitude:
+        flash("Invalid address. Please enter a valid address.", "danger")
+        return redirect("/signup")
+
     hashed_password = generate_password_hash(password)
-    
+
     try:
         conn = sqlite3.connect('feedforward.db')
         cur = conn.cursor()
         cur.execute("""
-            INSERT INTO users (username, password, address, email, account_type)
-            VALUES (?, ?, ?, ?, ?)
-        """, (username, hashed_password, address, email, account_type))
+            INSERT INTO users (username, hash, address, email, account_type, bio, phone_number, latitude, longitude)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (username, hashed_password, address, email, account_type, bio, phone_number, latitude, longitude))
         conn.commit()
         conn.close()
         flash("Account successfully created!", "success")
@@ -72,6 +92,8 @@ def register():
         flash("Username or email already exists.", "danger")
         return redirect("/signup")
 
+
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     return render_template('login.html')
@@ -79,6 +101,65 @@ def login():
 @app.route("/unauthorized")
 def unauthorized():
     return render_template('unauthorized.html')
+
+def get_markers():
+    conn = sqlite3.connect("feedforward.db")
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT user_id, username, latitude, longitude, address, bio 
+        FROM users 
+        WHERE account_type = 'recipient'
+    """)
+    markers = [
+        {"id": row[0], "name": row[1], "lat": row[2], "lng": row[3], "address": row[4], "bio": row[5]}
+        for row in cursor.fetchall()
+    ]
+    conn.close()
+    return markers
+
+@app.route("/api/markers")
+def markers():
+    return jsonify(get_markers())
+
+
+@app.route("/donate")
+def donate():
+    recipient_id = request.args.get("recipient_id")
+
+    conn = sqlite3.connect("feedforward.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT name FROM recipients WHERE id = ?", (recipient_id,))
+    recipient = cursor.fetchone()
+    conn.close()
+
+    recipient_name = recipient[0] if recipient else "Unknown Recipient"
+
+    return render_template("donorform.html", recipient_id=recipient_id, recipient_name=recipient_name)
+
+
+@app.route("/submit_donation", methods=["POST"])
+def submit_donation():
+    recipient_id = request.form["recipient_id"]
+    donor_name = request.form["donor_name"]
+    donor_info = request.form["donor_info"]
+    donor_address = request.form["donor_address"]
+    donation_type = request.form["donation_type"]
+    donation_description = request.form["donation_description"]
+    eta = request.form["eta"]
+
+    conn = sqlite3.connect("feedforward.db")
+    cursor = conn.cursor()
+    cursor.execute("""
+        INSERT INTO donations 
+        (recipient_id, donor_name, donor_info, donor_address, donation_type, donation_description, eta) 
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    """, (recipient_id, donor_name, donor_info, donor_address, donation_type, donation_description, eta))
+    conn.commit()
+    conn.close()
+
+    return redirect("/")
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)  # Ensures the app runs only when executed directly
