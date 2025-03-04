@@ -87,7 +87,7 @@
             display: block;
         }
 
-        .popup-info {
+        .popup-info.card {
             display: none;
             position: fixed;
             top: 50%;
@@ -103,6 +103,19 @@
 
         .popup-info.active {
             display: block;
+        }
+
+        .close-btn {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .close-btn:hover {
+            background-color: darkred;
         }
     </style>
 </head>
@@ -122,17 +135,16 @@
         <div class="card-body">
             <p id="popupContent"><strong>Address</strong><br>Columbia, Maryland.</p>
             <p>Information about the recipient goes here.</p>
-            <!-- Only one "Donate to this location" button -->
             <a id="donateButton" href="#" class="btn btn-success">Donate to this location</a>
             <br>
-            <button class="btn text-white mt-2" style="background-color: red;" onclick="closePopup()">Close</button>
+            <button class="close-btn" id="closeBtn">Close</button>
         </div>
     </div>
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-         document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function () {
         var map = L.map('map').setView([39.2037, -76.8610], 13);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -148,36 +160,46 @@
             shadowSize: [41, 41]
         });
 
-        function fetchMarkers() {
-            fetch('/api/markers')
-                .then(response => response.json())
-                .then(data => {
-                    data.forEach(marker => {
-                        var newMarker = L.marker([marker.lat, marker.lng], { icon: greenIcon }).addTo(map)
-                            .on('click', function() {
-                                document.getElementById('popupOverlay').classList.add('active');
-                                document.getElementById('popupInfo').classList.add('active');
-                                document.getElementById('popupContent').innerHTML = `
-                                    <h5>${marker.name}</h5>
-                                    <p><strong>Address:</strong> ${marker.address}</p>
-                                    <p><strong>Bio:</strong> ${marker.bio || "No bio available"}</p>
-                                `;
-                                document.getElementById('donateButton').href = `/donate?recipient_id=${marker.id}`;
-                            });
-                    });
-                })
-                .catch(error => console.error('Error loading markers:', error));
-        }
+        fetch('/api/markers')
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(marker => {
+                    console.log("DEBUG: Marker data received:", marker); // Debugging line
+
+                    var newMarker = L.marker([marker.lat, marker.lng], { icon: greenIcon }).addTo(map)
+                        .on('click', function() {
+                            document.getElementById('popupOverlay').classList.add('active');
+                            document.getElementById('popupInfo').classList.add('active');
+                            document.getElementById('popupContent').innerHTML = `
+                                <h5>${marker.username}</h5>
+                                <p><strong>Address:</strong> ${marker.address}</p>
+                                <p><strong>Bio:</strong> ${marker.bio || "No bio available"}</p>
+                            `;
+
+                            // Check if user_id is properly defined
+                            if (marker.user_id) {
+                                console.log("DEBUG: Setting donateButton href with user_id:", marker.user_id);
+                                document.getElementById('donateButton').href = `/donate?recipient_id=${marker.user_id}`;
+                            } else {
+                                console.error("ERROR: marker.user_id is undefined for", marker);
+                                document.getElementById('donateButton').href = "#"; // Prevents broken link
+                            }
+                        });
+                });
+            })
+            .catch(error => console.error('Error loading markers:', error));
 
         fetchMarkers();
 
-        function closePopup() {
-            document.getElementById('popupOverlay').classList.remove('active');
-            document.getElementById('popupInfo').classList.remove('active');
-        }
+            // Handle closing the popup reliably using event delegation.
+            document.getElementById('popupOverlay').addEventListener('click', closePopup);
+            document.getElementById('closeBtn').addEventListener('click', closePopup);
 
-        document.getElementById('popupOverlay').addEventListener('click', closePopup);
-    });
+            function closePopup() {
+                document.getElementById('popupOverlay').classList.remove('active');
+                document.getElementById('popupInfo').classList.remove('active');
+            }
+        });
     </script>
 </body>
 

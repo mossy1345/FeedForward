@@ -111,7 +111,7 @@ def get_markers():
         WHERE account_type = 'recipient'
     """)
     markers = [
-        {"id": row[0], "name": row[1], "lat": row[2], "lng": row[3], "address": row[4], "bio": row[5]}
+        {"user_id": row[0], "username": row[1], "lat": row[2], "lng": row[3], "address": row[4], "bio": row[5]}
         for row in cursor.fetchall()
     ]
     conn.close()
@@ -126,9 +126,12 @@ def markers():
 def donate():
     recipient_id = request.args.get("recipient_id")
 
+    if not recipient_id or recipient_id == "undefined":  # Handle missing or undefined IDs
+        return "Invalid recipient ID", 400  # Return an error response
+
     conn = sqlite3.connect("feedforward.db")
     cursor = conn.cursor()
-    cursor.execute("SELECT name FROM recipients WHERE id = ?", (recipient_id,))
+    cursor.execute("SELECT username FROM users WHERE user_id = ?", (recipient_id,))
     recipient = cursor.fetchone()
     conn.close()
 
@@ -139,21 +142,26 @@ def donate():
 
 @app.route("/submit_donation", methods=["POST"])
 def submit_donation():
-    recipient_id = request.form["recipient_id"]
+    recipient_id = request.form.get("recipient_id", "").strip()
+
+    if not recipient_id.isdigit():  # Ensure recipient_id is a valid number
+        return "Invalid recipient ID", 400  # Return an error response
+
+    recipient_id = int(recipient_id)  # Now it's safe to convert
+
     donor_name = request.form["donor_name"]
-    donor_info = request.form["donor_info"]
     donor_address = request.form["donor_address"]
     donation_type = request.form["donation_type"]
     donation_description = request.form["donation_description"]
-    eta = request.form["eta"]
+    eta = request.form["donation_datetime"]
 
     conn = sqlite3.connect("feedforward.db")
     cursor = conn.cursor()
     cursor.execute("""
         INSERT INTO donations 
-        (recipient_id, donor_name, donor_info, donor_address, donation_type, donation_description, eta) 
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-    """, (recipient_id, donor_name, donor_info, donor_address, donation_type, donation_description, eta))
+        (recipient_id, donor_name, donor_address, donation_type, donation_description, eta) 
+        VALUES (?, ?, ?, ?, ?, ?)
+    """, (recipient_id, donor_name, donor_address, donation_type, donation_description, eta))
     conn.commit()
     conn.close()
 
