@@ -27,9 +27,101 @@ def donor_page():
 def admin():
     return render_template('admin.html')
 
-@app.route("/recipient", methods=["GET"], endpoint="recipient_page")
-def recipient():
-    return render_template('foodbanks.html')
+#Routes for donations tracker
+#------------------------------------------------------------------------------------------------------
+
+#donor routes
+@app.route("/donor_donations", methods=["GET"])
+def donor_donations():
+    user_id = session.get("user_id")  # Ensure the donor is logged in
+
+    conn = sqlite3.connect('feedforward.db')
+    cursor = conn.cursor()
+
+    # Fetch current donations for donor (where status is pending)
+    cursor.execute("""
+        SELECT id, recipient_id, donor_name, eta, donation_description, donor_address, donation_type 
+        FROM donations 
+        WHERE recipient_id IN (SELECT user_id FROM users WHERE account_type = 'recipient') AND donation_status = 'pending' AND donor_name = (SELECT username FROM users WHERE user_id = ?)
+    """, (user_id,))
+    current_donations = cursor.fetchall()
+
+    # Fetch past donations for donor (status cancelled)
+    cursor.execute("""
+        SELECT id, recipient_id, donor_name, eta, donation_description, donor_address, donation_type 
+        FROM donations 
+        WHERE recipient_id IN (SELECT user_id FROM users WHERE account_type = 'recipient') AND donation_status = 'cancelled' AND donor_name = (SELECT username FROM users WHERE user_id = ?)
+    """, (user_id,))
+    past_donations = cursor.fetchall()
+
+    conn.close()
+
+    return render_template("donor_donations.html", current_donations=current_donations, past_donations=past_donations)
+
+#cancel donation (for donors)
+@app.route("/cancel_donation/<int:donation_id>", methods=["POST"])
+def cancel_donation(donation_id):
+    conn = sqlite3.connect('feedforward.db')
+    cursor = conn.cursor()
+
+    # Update donation status to cancelled
+    cursor.execute("""
+        UPDATE donations
+        SET donation_status = 'cancelled'
+        WHERE id = ?
+    """, (donation_id,))
+    conn.commit()
+    conn.close()
+
+    return redirect("/donor_donations")
+
+#recipeint routes
+@app.route("/recipient_donations", methods=["GET"])
+def recipient_donations():
+    user_id = session.get("user_id")  # Ensure the recipient is logged in
+
+    conn = sqlite3.connect('feedforward.db')
+    cursor = conn.cursor()
+
+    # Fetch current donations for recipient (status is pending)
+    cursor.execute("""
+        SELECT id, donor_name, eta, donation_description, donor_address, donation_type 
+        FROM donations 
+        WHERE recipient_id = ? AND donation_status = 'pending'
+    """, (user_id,))
+    current_donations = cursor.fetchall()
+
+    # Fetch past donations for recipient (status completed)
+    cursor.execute("""
+        SELECT id, donor_name, eta, donation_description, donor_address, donation_type 
+        FROM donations 
+        WHERE recipient_id = ? AND donation_status = 'completed'
+    """, (user_id,))
+    past_donations = cursor.fetchall()
+
+    conn.close()
+
+    return render_template("recipient_donations.html", current_donations=current_donations, past_donations=past_donations)
+
+#confirm delivery (for recipients)
+@app.route("/confirm_delivery/<int:donation_id>", methods=["POST"])
+def confirm_delivery(donation_id):
+    conn = sqlite3.connect('feedforward.db')
+    cursor = conn.cursor()
+
+    # Update donation status to completed
+    cursor.execute("""
+        UPDATE donations
+        SET donation_status = 'completed'
+        WHERE id = ?
+    """, (donation_id,))
+    conn.commit()
+    conn.close()
+
+    return redirect("/recipient_donations")
+
+
+#-------------------------------------------------------------------------------------------------------
 
 def geocode_address(address):
     # Send a request to Nominatim API for geocoding
