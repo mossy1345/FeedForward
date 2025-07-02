@@ -1,16 +1,21 @@
 import os
 import sqlite3
-import requests 
+import requests
 from flask import Flask, flash, redirect, render_template, request, session, send_from_directory, get_flashed_messages, jsonify
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
+from opencage.geocoder import OpenCageGeocode
 import datetime
 from functools import wraps
 
 app = Flask(__name__)
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
+
+#configure geocoder
+key = 'c181a74ff5a34bf8ab449c4da95aec9c'
+geocoder = OpenCageGeocode(key)
 
 conn = sqlite3.connect('feedforward.db')
 c = conn.cursor()
@@ -124,19 +129,32 @@ def confirm_delivery(donation_id):
 #-------------------------------------------------------------------------------------------------------
 
 def geocode_address(address):
-    # Send a request to Nominatim API for geocoding
-    url = f'https://nominatim.openstreetmap.org/search?format=json&q={address}'
-    response = requests.get(url)
-    data = response.json()
-
-    # Check if we received valid geocoding data
-    if data:
-        # Extract latitude and longitude
-        latitude = data[0]['lat']
-        longitude = data[0]['lon']
-        return latitude, longitude
-    else:
+    if not key:
+        print("❌ Missing OpenCage API key.")
         return None, None
+
+    url = "https://api.opencagedata.com/geocode/v1/json"
+    params = {
+        "q": address,
+        "key": key,
+        "limit": 1
+    }
+
+    try:
+        response = requests.get(url, params=params, timeout=10)
+        response.raise_for_status()
+        data = response.json()
+
+        if data.get("results"):
+            geometry = data["results"][0]["geometry"]
+            return geometry["lat"], geometry["lng"]
+        else:
+            print("⚠️ No results found.")
+            return None, None
+    except Exception as e:
+        print(f"❌ Geocoding failed: {e}")
+        return None, None
+
 
 @app.route("/signup")
 def signup():
@@ -173,9 +191,9 @@ def register():
         conn = sqlite3.connect('feedforward.db')
         cur = conn.cursor()
         cur.execute("""
-            INSERT INTO users (username, hash, address, email, account_type, bio, phone_number, latitude, longitude)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (username, hashed_password, address, email, account_type, bio, phone_number, latitude, longitude))
+    INSERT INTO users (username, password, address, email, account_type, bio, latitude, longitude)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+""", (username, hashed_password, address, email, account_type, bio, latitude, longitude))
         conn.commit()
         conn.close()
         flash("Account successfully created!", "success")
@@ -189,6 +207,10 @@ def register():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     return render_template('login.html')
+
+@app.route("/recipient", methods=["GET", "POST"])
+def recipient():
+    return render_template('foodbanks.html')
 
 @app.route("/unauthorized")
 def unauthorized():

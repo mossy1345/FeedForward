@@ -1,181 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
-    <style>
-        /* General styles */
-        body {
-            font-family: Arial, sans-serif;
-            background-image: url('/static/images/loginbackground.jpg');
-            background-position: 30% center; /* Moves the image 30% to the right */
-            background-size: cover;
-            background-repeat: no-repeat;
-            margin: 0;
-            padding: 0;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login</title>
 
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 50px;
-        }
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" />
 
-        /* Navbar styles */
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #E75931;
-            padding: 15px 30px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
+  <!-- Custom Styles -->
+  <style>
+    /* Background Blur Layer */
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
 
-        .navbar-brand {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #17a2b8;
-            text-decoration: none;
-        }
+    .background-blur {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: 100vw;
+      background-image: url('https://media.discordapp.net/attachments/905204910746902528/1386561537954811984/output.jpg?ex=685a278f&is=6858d60f&hm=b659277a8954160892c35acfb574c7d40e73b3b717624215d0ef0e11c518dc3f&=&format=webp&width=720&height=720');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      filter: blur(6px);
+      z-index: -1;
+    }
 
-        .navbar-brand span {
-            color: #FFFFFF;
-        }
+    .content-wrapper {
+      position: relative;
+      z-index: 1;
+    }
 
-        .navbar-nav {
-            list-style: none;
-            display: flex;
-            margin: 0;
-            padding: 0;
-        }
+    /* Navbar */
+    .navbar-icon {
+      font-size: 1.5rem;
+      padding-right: 10px;
+    }
 
-        .nav-item {
-            margin-left: 20px;
-        }
+    .navbar-custom {
+      background-color: rgba(255,255,255,0.9);
+    }
 
-        .nav-link {
-            color: #FFF;
-            text-decoration: none;
-            font-weight: 600;
-            background-color: rgba(14, 50, 66, 0.3);
-            padding: 7.5px;
-            border-radius: 10px;
-        }
+    /* Login Section */
+    .login-section {
+      padding-bottom: 4rem;
+      margin-top: 5rem;
+    }
 
-        .nav-link:hover {
-            color: #4B6643;
-        }
+    .login-form input {
+      font-size: 1rem;
+    }
 
-        /* Login form styles */
-        .login-card {
-            background-color: #4B6643;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-            border-radius: 10px;
-            padding: 30px;
-            margin-top: 55px;
-            color: #FFF;
-            font-size: 25px;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-        }
+    .login-form label {
+      font-weight: 600;
+    }
 
-        .login-card h2 {
-            text-align: center;
-            color: #FFFFFF;
-            font-weight: bold;
-            margin-bottom: 30px;
-        }
+    .login-form .btn {
+      font-weight: bold;
+    }
 
-        .form-label {
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: #FFF;
-            font-size: 20px;
-        }
-
-        .form-control {
-            width: 95%;
-            padding: 15px 20px;
-            border-radius: 25px;
-            border: 2px solid #ccc;
-            margin-top: 15px;
-            margin-bottom: 40px;
-            font-size: 1rem;
-        }
-
-        .form-control:focus {
-            border-color: #28a745;
-            outline: none;
-        }
-
-        .btn {
-            width: 100%;
-            padding: 15px;
-            border-radius: 25px;
-            background-color: #839B4D;
-            border: none;
-            color: #fff;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .btn:hover {
-            background-color: #218838;
-        }
-
-        .text-center {
-            text-align: center;
-        }
-
-        .text-link {
-            color: #007bff;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .text-link:hover {
-            color: #0056b3;
-        }
-    </style>
+    .submit-custom-bkg {
+      background-color: #4c6842;
+    }
+  </style>
 </head>
 <body>
 
-<!-- Hero Section (Navbar) -->
-<nav>
-    <a href="/" class="navbar-brand"><span>Feed Forward</span><span> Maryland</span></a>
-    <ul class="navbar-nav ms-auto mt-2">
-        <li class="nav-item"><a class="nav-link" href="/logout">Log Out</a></li>
-        <li class="nav-item"><a class="nav-link" href="/signup">Register</a></li>
-        <li class="nav-item"><a class="nav-link" href="/login">Log In</a></li>
-    </ul>
-</nav>
+  <!-- Background Blur Layer -->
+  <div class="background-blur"></div>
 
-<!-- Login Form Section -->
-<div class="container">
-    <div class="login-card">
-    <h2>Log In</h2>
-        <form action="/login" method="post">
-            <div>
-                <label for="username" class="form-label">Username</label>
-                <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username" required>
-            </div>
-            <div>
-                <label for="password" class="form-label">Password</label>
-                <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
-            </div>
-            <div>
-                <button type="submit" class="btn">Log In</button>
-            </div>
-        </form>
-        <div class="text-center mt-4">
-            <p>Don't have an account? <a href="/signup" class="text-link">Sign Up</a></p>
+  <!-- Page Content -->
+  <div class="content-wrapper">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-md navbar-light shadow-sm navbar-custom">
+      <div class="container-fluid">
+        <a class="navbar-icon" href="#"></a>
+        <a class="navbar-brand fw-bold fs-2" href="https://feedforwardmd.org" target="_blank" rel="noopener noreferrer">
+            <span style="color:#de5832">Feed</span><span style="color:#849c4d"> Forward</span><span class="text-dark"> Maryland</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar"
+          aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbar">
+          <ul class="navbar-nav ms-auto mt-2">
+            <li class="nav-item"><a class="nav-link" href="/signup">Sign Up</a></li>
+          </ul>
         </div>
-    </div>
-</div>
+      </div>
+    </nav>
+
+    <!-- Login Form -->
+    <main class="container login-section">
+      <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+          <div class="card shadow-lg border-0 rounded-3">
+            <div class="card-body p-4">
+              <h2 class="text-center text-success fw-bold mb-4"><span style="color:#4d6746">Log In</span></h2>
+
+              <form action="/login" method="post" class="login-form">
+                <!-- Username -->
+                <div class="mb-3">
+                  <label for="username" class="form-label">Username</label>
+                  <input type="text" class="form-control rounded-pill" id="username" name="username" placeholder="Enter your username" required>
+                </div>
+
+                <!-- Password -->
+                <div class="mb-4">
+                  <label for="password" class="form-label">Password</label>
+                  <input type="password" class="form-control rounded-pill" id="password" name="password" placeholder="Enter your password" required>
+                </div>
+
+                <!-- Login Button -->
+                <div class="d-grid">
+                  <button type="submit" class="btn btn-success btn-lg rounded-pill submit-custom-bkg">Log In</button>
+                </div>
+              </form>
+
+              <!-- Redirect to Signup -->
+              <div class="text-center mt-4">
+                <p>Don't have an account? <a href="/signup" class="text-decoration-none text-primary fw-bold">Sign Up</a></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Bootstrap Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
