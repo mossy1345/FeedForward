@@ -11,7 +11,7 @@
     body {
       font-family: Arial, sans-serif;
       background-color: #0F2F3C;
-      background-image: url(https://media.discordapp.net/attachments/905204910746902528/1386803254460944595/donorform.jpg?ex=685b08ad&is=6859b72d&hm=50ed5ce1208e599ae64852d678d163f533b2f62d993e2a4ff6f922b616fe6cc7&=&format=webp&width=720&height=720);
+      background-image: url('/static/images/donorform.jpg');
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
@@ -132,17 +132,20 @@
 
       <div class="collapse navbar-collapse" id="navbar">
         <ul class="navbar-nav ms-auto mb-2 mb-md-0">
-          {% if session["user_id"] %}
-          <li class="nav-item">
-            <a class="nav-link" href="/logout">Log Out</a>
-          </li>
+          {% if session.get("user_id") %}
+            <li class="nav-item">
+              <span class="nav-link">Welcome, {{ session["username"] }}</span>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/logout">Log Out</a>
+            </li>
           {% else %}
-          <li class="nav-item">
-            <a class="nav-link" href="/signup">Register</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/login">Log In</a>
-          </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/signup">Register</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/login">Log In</a>
+            </li>
           {% endif %}
         </ul>
       </div>

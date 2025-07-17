@@ -13,7 +13,7 @@
       padding: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       color: white;
-      background-image: url(https://media.discordapp.net/attachments/905204910746902528/1386752946594648175/donortrackerbkg.jpg?ex=685ad9d3&is=68598853&hm=03e8285b1657b89640bcf67b900ffc90f197b2d65d8cb289b3df6de8e9facc24&=&format=webp&width=720&height=720);
+      background-image: url('/static/images/donortrackerbkg.jpg');
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -151,18 +151,21 @@
 
       <div class="collapse navbar-collapse" id="navbar">
         <ul class="navbar-nav ms-auto mb-2 mb-md-0">
-          {% if session["user_id"] %}
-          <li class="nav-item">
-            <a class="nav-link" href="/logout">Log Out</a>
-          </li>
-          {% else %}
-          <li class="nav-item">
-            <a class="nav-link" href="/signup">Register</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/login">Log In</a>
-          </li>
-          {% endif %}
+          {% if session.get("user_id") %}
+        <li class="nav-item">
+          <span class="nav-link">Welcome, {{ session["username"] }}</span>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/logout">Log Out</a>
+        </li>
+        {% else %}
+        <li class="nav-item">
+          <a class="nav-link" href="/signup">Register</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/login">Log In</a>
+        </li>
+        {% endif %}
         </ul>
       </div>
     </div>
@@ -190,7 +193,7 @@
           <td>{{ donation[2] }}</td>
           <td>{{ donation[3] }}</td>
           <td>
-            <form action="{{ url_for('cancel_donation', donation_id=donation[0]) }}" method="POST">
+            <form action="{{ url_for('cancel_donation', donation_id=donation[4]) }}" method="POST">
               <button type="submit" class="btn btn-danger">Cancel Donation</button>
             </form>
           </td>

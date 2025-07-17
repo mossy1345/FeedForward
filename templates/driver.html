@@ -45,7 +45,7 @@
     }
 
     header {
-      background-color: rgba(228, 77, 38);
+      background-color: rgba(173,209,158,255);
       color: white;
       padding: 0px;
       font-size: 35px;
@@ -155,7 +155,7 @@
       top: 0;
       right: 0;
       background-color: #f8f9fa;
-      width: 300px;
+      width: 400px;
       height: 100vh;
       z-index: 1050;
       padding-left: 15px;
@@ -171,7 +171,13 @@
 
     /* Sidebar content pushed down */
     #donorSidebar > .sidebar-content {
-      margin-top: 190px;
+      margin-top: 120px;
+    }
+
+    /* Center the sidebar header text and increase font size */
+    #donorSidebar > .sidebar-content > h4 {
+      text-align: center;
+      font-size: 1.8rem; /* bigger font size */
     }
 
     /* When sidebar is active, slide it in */
@@ -228,59 +234,68 @@
         <span class="navbar-toggler-icon"></span>
       </button>
 
-    <div class="collapse navbar-collapse" id="navbar">
-      <ul class="navbar-nav ms-auto mb-2 mb-md-0">
-        {% if session.get("user_id") %}
-          <li class="nav-item">
-            <span class="nav-link">Welcome, {{ session["username"] }}</span>
-          </li>
+      <div class="collapse navbar-collapse" id="navbar">
+        <ul class="navbar-nav ms-auto mb-2 mb-md-0">
+          {% if session["user_id"] %}
           <li class="nav-item">
             <a class="nav-link" href="/logout">Log Out</a>
           </li>
-        {% else %}
+          {% else %}
           <li class="nav-item">
             <a class="nav-link" href="/signup">Register</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/login">Log In</a>
           </li>
-        {% endif %}
-      </ul>
-
+          {% endif %}
+        </ul>
       </div>
     </div>
   </nav>
 
   <header>
     <img id="logo" src="static/images/IMG_20240620_203511_146_2.jpg" alt="Feed Forward Logo">
-    <span style="font-weight:bold">Feed Forward Donor Page!</span>
-    <button class="toggle-sidebar-btn" onclick="toggleSidebar()">My Orders</button>
+    <span style="font-weight:bold; color:#000">Feed Forward Driver Page!</span>
+    <button class="toggle-sidebar-btn" onclick="toggleSidebar()">Your Driver Profile</button>
   </header>
 
   <!-- Sidebar -->
   <div id="donorSidebar">
-    <button class="close-sidebar-btn" onclick="toggleSidebar()">×</button>
-    <div class="sidebar-content">
-      <h5 class="fw-bold mb-3">Your Donation Orders</h5>
-      <ul class="list-group" id="donationList">
-        <li class="list-group-item">
-          <strong>Order #1234</strong><br>
-          Status: <span class="text-success">Delivered</span><br>
-          Recipient: Columbia Shelter
-        </li>
-        <li class="list-group-item">
-          <strong>Order #1235</strong><br>
-          Status: <span class="text-warning">In Transit</span><br>
-          Recipient: Elkridge Pantry
-        </li>
-        <li class="list-group-item">
-          <strong>Order #1236</strong><br>
-          Status: <span class="text-secondary">Pending Pickup</span><br>
-          Recipient: Laurel Aid Center
-        </li>
-      </ul>
-    </div>
+  <button class="close-sidebar-btn" onclick="toggleSidebar()">×</button>
+  <div class="sidebar-content">
+    <!-- Drop-off count and service hours -->
+    <h4><span style="font-weight:bold">You have completed </span><span id="dropCount" style="font-weight:bold">3</span><span style="font-weight:bold"> drop-off drives</span></h4>
+    <p style="font-size: 1.1rem; color: #000; margin-top: -10px;">
+      This equates to <span id="serviceHours">1.5</span> service hours
+    </p>
+
+    <h5 class="fw-bold mb-3">Your Accepted Drop Off Orders</h5>
+    <ul class="list-group" id="donationList">
+      <li class="list-group-item">
+        <strong>Order #1234</strong><br>
+        Status: <span class="text-success">Delivered</span><br>
+        Recipient: Columbia Shelter
+      </li>
+      <li class="list-group-item">
+        <strong>Order #1235</strong><br>
+        Status: <span class="text-warning">In Transit</span><br>
+        Recipient: Elkridge Pantry
+      </li>
+      <li class="list-group-item">
+        <strong>Order #1236</strong><br>
+        Status: <span class="text-secondary">Pending Pickup</span><br>
+        Recipient: Laurel Aid Center
+      </li>
+    </ul>
   </div>
+</div>
+
+<script>
+  const dropOffs = 3; // Replace with actual dynamic value if needed
+  document.getElementById("dropCount").textContent = dropOffs;
+  document.getElementById("serviceHours").textContent = (dropOffs * 0.5).toFixed(1);
+</script>
+
 
   <div id="map"></div>
 

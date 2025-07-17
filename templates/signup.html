@@ -93,12 +93,21 @@
 
         <div class="collapse navbar-collapse" id="navbar">
           <ul class="navbar-nav ms-auto mt-2">
-            {% if session["user_id"] %}
-              <li class="nav-item"><a class="nav-link" href="/logout">Log Out</a></li>
-            {% else %}
-              <li class="nav-item"><a class="nav-link" href="/signup">Register</a></li>
-              <li class="nav-item"><a class="nav-link" href="/login">Log In</a></li>
-            {% endif %}
+          {% if session.get("user_id") %}
+            <li class="nav-item">
+              <span class="nav-link">Welcome, {{ session["username"] }}</span>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/logout">Log Out</a>
+            </li>
+          {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="/signup">Register</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/login">Log In</a>
+            </li>
+          {% endif %}
           </ul>
         </div>
       </div>

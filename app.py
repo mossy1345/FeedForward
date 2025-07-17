@@ -8,6 +8,7 @@ from werkzeug.utils import secure_filename
 from opencage.geocoder import OpenCageGeocode
 import datetime
 from functools import wraps
+from helpers import login_required, role_required
 
 app = Flask(__name__)
 app.config["SESSION_TYPE"] = "filesystem"
@@ -25,10 +26,14 @@ def home():
     return render_template("index.html")
 
 @app.route("/donor", methods=["GET"], endpoint="donor_page")
+@login_required
+@role_required("donor")
 def donor_page():
     return render_template('donor.html')
 
 @app.route("/admin", methods=["GET"], endpoint="admin_page")
+@login_required
+@role_required("admin")
 def admin():
     return render_template('admin.html')
 
@@ -37,6 +42,8 @@ def admin():
 
 #donor routes
 @app.route("/donor_donations", methods=["GET"])
+@login_required
+@role_required("donor")
 def donor_donations():
     user_id = session.get("user_id")  # Ensure the donor is logged in
 
@@ -65,23 +72,26 @@ def donor_donations():
 
 #cancel donation (for donors)
 @app.route("/cancel_donation/<int:donation_id>", methods=["POST"])
+@login_required
 def cancel_donation(donation_id):
     conn = sqlite3.connect('feedforward.db')
     cursor = conn.cursor()
 
-    # Update donation status to cancelled
+    # Only cancel if the donation belongs to the logged-in user
     cursor.execute("""
         UPDATE donations
         SET donation_status = 'cancelled'
-        WHERE id = ?
-    """, (donation_id,))
+        WHERE id = ? AND recipient_id = ?
+    """, (donation_id, session["user_id"]))
     conn.commit()
     conn.close()
 
-    return redirect("/donor_donations")
+    return redirect("/recipient")
 
 #recipeint routes
 @app.route("/recipient_donations", methods=["GET"])
+@login_required
+@role_required("recipient")
 def recipient_donations():
     user_id = session.get("user_id")  # Ensure the recipient is logged in
 
@@ -110,6 +120,8 @@ def recipient_donations():
 
 #confirm delivery (for recipients)
 @app.route("/confirm_delivery/<int:donation_id>", methods=["POST"])
+@login_required
+@role_required("recipient")
 def confirm_delivery(donation_id):
     conn = sqlite3.connect('feedforward.db')
     cursor = conn.cursor()
@@ -203,14 +215,80 @@ def register():
         return redirect("/signup")
 
 
-
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    return render_template('login.html')
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+
+        user = get_user_by_username(username)
+
+        if user and check_password_hash(user["password"], password):
+            session["user_id"] = user["user_id"]
+            session["account_type"] = user["account_type"]
+            session["username"] = user["username"]  # ← Add this
+
+            if user["account_type"] == "donor":
+                return redirect("/donor")
+            elif user["account_type"] == "recipient":
+                return redirect("/recipient")
+            elif user["account_type"] == "admin":
+                return redirect("/admin")
+            else:
+                return render_template("accessdenied.html"), 403
+
+        return render_template("login.html", error="Invalid username or password")
+
+    return render_template("login.html")
+
+def get_user_by_username(username):
+    conn = sqlite3.connect("feedforward.db")
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM users WHERE username = ?", (username,))
+    user = cur.fetchone()
+    conn.close()
+    return user
 
 @app.route("/recipient", methods=["GET", "POST"])
+@login_required
+@role_required("recipient")
 def recipient():
-    return render_template('foodbanks.html')
+    user_id = session.get("user_id")
+
+    conn = sqlite3.connect('feedforward.db')
+    cursor = conn.cursor()
+
+    # Current pending donations
+    cursor.execute("""
+        SELECT donor_name, eta, donation_description, donor_address, id
+        FROM donations
+        WHERE recipient_id = ? AND donation_status = 'pending'
+    """, (user_id,))
+    current_donations = cursor.fetchall()
+
+    # Past cancelled donations
+    cursor.execute("""
+        SELECT donor_name, eta, donation_description, donor_address
+        FROM donations
+        WHERE recipient_id = ? AND donation_status = 'cancelled'
+    """, (user_id,))
+    past_donations = cursor.fetchall()
+
+    # Past completed donations
+    cursor.execute("""
+        SELECT donor_name, eta, donation_description, donor_address
+        FROM donations
+        WHERE recipient_id = ? AND donation_status = 'completed'
+    """, (user_id,))
+    past_donations_recipient = cursor.fetchall()
+
+    conn.close()
+
+    return render_template("foodbanks.html", 
+                           current_donations=current_donations,
+                           past_donations=past_donations,
+                           past_donations_recipient=past_donations_recipient)
 
 @app.route("/unauthorized")
 def unauthorized():
@@ -232,11 +310,14 @@ def get_markers():
     return markers
 
 @app.route("/api/markers")
+@login_required
 def markers():
     return jsonify(get_markers())
 
 
 @app.route("/donate")
+@login_required
+@role_required("donor")
 def donate():
     recipient_id = request.args.get("recipient_id")
 
@@ -255,6 +336,8 @@ def donate():
 
 
 @app.route("/submit_donation", methods=["POST"])
+@login_required
+@role_required("donor")
 def submit_donation():
     recipient_id = request.form.get("recipient_id", "").strip()
 
@@ -281,6 +364,10 @@ def submit_donation():
 
     return redirect("/")
 
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect("/login")
 
 
 if __name__ == "__main__":

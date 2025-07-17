@@ -25,7 +25,7 @@
       left: 0;
       height: 100vh;
       width: 100vw;
-      background-image: url('https://media.discordapp.net/attachments/905204910746902528/1386561537954811984/output.jpg?ex=685a278f&is=6858d60f&hm=b659277a8954160892c35acfb574c7d40e73b3b717624215d0ef0e11c518dc3f&=&format=webp&width=720&height=720');
+      background-image: url('/static/images/loginbackground.jpg');
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
@@ -92,7 +92,18 @@
 
         <div class="collapse navbar-collapse" id="navbar">
           <ul class="navbar-nav ms-auto mt-2">
-            <li class="nav-item"><a class="nav-link" href="/signup">Sign Up</a></li>
+            {% if session.get("user_id") %}
+              <li class="nav-item">
+                <span class="nav-link">Welcome, {{ session["username"] }}</span>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/logout">Log Out</a>
+              </li>
+            {% else %}
+              <li class="nav-item">
+                <a class="nav-link" href="/signup">Sign Up</a>
+              </li>
+            {% endif %}
           </ul>
         </div>
       </div>
